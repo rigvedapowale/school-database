@@ -1,0 +1,216 @@
+database name : school_db
+------------------------------------------------------
+tables in database :
+studentinfo
+stud_result
+teacher_info
+book_issue
+-----------------------------------------------------
+views:
+marksheet 
+result_total 
+resultlang
+library_record
+-----------------------------------------------------
+triggers:
+engaddone
+stud_info_trigger1             
+-----------------------------------------------------
+
+
+C:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 10
+Server version: 10.4.24-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+
+
+
+MariaDB [emp_db]> use school_db;	#database creation
+Database changed
+
+
+MariaDB [school_db]> show tables;	#cheking for table in database
+Empty set (0.001 sec)
+
+MariaDB [school_db]> create table studentinfo(id int primary key auto_increment, sfname varchar(20),slname varchar(20), saddress varchar(100), scontact int(20),semail varchar(30));
+Query OK, 0 rows affected (0.365 sec)	#table creation 
+
+
+MariaDB [school_db]> desc studentinfo;			#cheking table structure/describing table
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| id       | int(11)      | NO   | PRI | NULL    | auto_increment |
+| sfname   | varchar(20)  | YES  |     | NULL    |                |
+| slname   | varchar(20)  | YES  |     | NULL    |                |
+| saddress | varchar(100) | YES  |     | NULL    |                |
+| scontact | int(20)      | YES  |     | NULL    |                |
+| semail   | varchar(30)  | YES  |     | NULL    |                |
++----------+--------------+------+-----+---------+----------------+
+6 rows in set (0.044 sec)
+
+
+MariaDB [school_db]> insert into studentinfo values(101,'manish','patil','mumbai',8956895623,'manish@yahoo.com');	#inserting record in table
+Query OK, 1 row affected, 1 warning (0.093 sec)
+
+MariaDB [school_db]> insert into studentinfo values(103,'Kalpana','Mahale','pune',858592623,'kalpana@yahoo.com');
+Query OK, 1 row affected (1.072 sec)
+
+MariaDB [school_db]> insert into studentinfo values(104,'Radha','Powale','pune',8562358623,'radha@yahoo.com');
+Query OK, 1 row affected, 1 warning (0.041 sec)
+
+MariaDB [school_db]> insert into studentinfo values(105,'Leena','Powale','Nashik',9856237450,'leena@yahoo.com');
+Query OK, 1 row affected, 1 warning (0.348 sec)
+
+
+------------------------------------------------------------------------table stud_result---------------------------------------------------------------------------------------
+MariaDB [school_db]> create table stud_result(id int references studentinfo(id),english float,marathi float,hindi float,maths float, social_science float, science float);
+Query OK, 0 rows affected (0.244 sec)
+
+
+MariaDB [school_db]> insert into stud_result values(102,55,68,86,56,95,74); #inserting records
+Query OK, 1 row affected (0.061 sec)
+
+MariaDB [school_db]> insert into stud_result values(103,78,88,56,78,56,94);
+Query OK, 1 row affected (0.061 sec)
+
+MariaDB [school_db]> insert into stud_result values(104,45,88,75,78,56,94);
+Query OK, 1 row affected (0.056 sec)
+
+MariaDB [school_db]> insert into stud_result values(105,75,78,75,78,56,94);
+Query OK, 1 row affected (1.292 sec)
+
+MariaDB [school_db]> select * from stud_result;  #display data
++------+---------+---------+-------+-------+----------------+---------+
+| id   | english | marathi | hindi | maths | social_science | science |
++------+---------+---------+-------+-------+----------------+---------+
+|  101 |      45 |      78 |    52 |    96 |             65 |      72 |
+|  102 |      55 |      68 |    86 |    56 |             95 |      74 |
+|  103 |      78 |      88 |    56 |    78 |             56 |      94 |
+|  104 |      45 |      88 |    75 |    78 |             56 |      94 |
+|  105 |      75 |      78 |    75 |    78 |             56 |      94 |
++------+---------+---------+-------+-------+----------------+---------+
+5 rows in set (0.040 sec)
+
+------------------------------------------------------------------------table teacher_info---------------------------------------------------------------------------------------
+MariaDB [school_db]> create table teacher_info(tid int,tname varchar(50),tcontact int(20),tqulification varchar(20));
+Query OK, 0 rows affected (0.286 sec)
+
+MariaDB [school_db]> insert into teacher_info values(201,'Meena Patil',7845895632,'B.Sc.B.Ed');
+Query OK, 1 row affected, 1 warning (0.108 sec)
+
+MariaDB [school_db]> insert into teacher_info values(202,'Beena ',8956231020,'B.Sc.B.Ed');
+Query OK, 1 row affected, 1 warning (0.120 sec)
+
+MariaDB [school_db]> insert into teacher_info values(203,'Kalpana ',8562352020,'B.A.B.Ed');
+Query OK, 1 row affected, 1 warning (0.109 sec)
+
+MariaDB [school_db]> alter table teacher_info modify tcontact int(50);  
+Query OK, 0 rows affected (0.059 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+
+------------------------------------------------------------------------table book_issue---------------------------------------------------------------------------------------
+MariaDB [school_db]> create table book_issue(Bid int(20) primary key,bname varchar(20),sid int(20) references studentinfo(id),date_of_issue date,date_of_return date);
+Query OK, 0 rows affected (0.431 sec)
+
+
+------------------------------------------------------------------------table studentinfo_update---------------------------------------------------------------------------------------
+ create table studentinfo_update(updates_reocord varchar(20), date_time datetime);
+Query OK, 0 rows affected (0.292 sec)
+
+-------------------------------------------------------------------------------------views creation--------------------------------------------------------------------------------
+
+MariaDB [school_db]> create view resultlang as select english,marathi,hindi from stud_result;
+Query OK, 0 rows affected (0.085 sec)
+
+
+MariaDB [school_db]> select * from resultlang;
++---------+---------+-------+
+| english | marathi | hindi |
++---------+---------+-------+
+|      45 |      78 |    52 |
+|      55 |      68 |    86 |
+|      78 |      88 |    56 |
+|      45 |      88 |    75 |
+|      75 |      78 |    75 |
+|      71 |      72 |    70 |
++---------+---------+-------+
+6 rows in set (0.001 sec)
+
+--------------------------------------------------------------------------------------view result_total-----------------------------------------------------------------------
+MariaDB [school_db]> create view result_total as select id, english+hindi+marathi+maths+social_science+science as total_marks from stud_result;
+Query OK, 0 rows affected (0.081 sec)
+
+MariaDB [school_db]> select * from result_total;
++------+-------------+
+| id   | total_marks |
++------+-------------+
+|  101 |         408 |
+|  102 |         434 |
+|  103 |         450 |
+|  104 |         436 |
+|  105 |         456 |
+|  106 |         401 |
++------+-------------+
+6 rows in set (0.002 sec)
+
+-----------------------------------------------------------------------------view marksheet------------------------------------------------------------------------------------------
+MariaDB [school_db]> create or replace view marksheet as select i.id,concat(i.sfname,' ',i.slname) as full_name, r.english,r.marathi,r.hindi,r.social_science,r.science,r.maths,r.english+r.marathi+r.hindi+r.social_science+r.science+r.maths as total_marks, ((r.english+r.marathi+r.hindi+r.social_science+r.science+r.maths)/600)*100 as percentage from studentinfo i left join stud_result r on i.id=r.id;
+Query OK, 0 rows affected (0.051 sec)
+
+MariaDB [school_db]> select * from marksheet;
++-----+------------------+---------+---------+-------+----------------+---------+-------+-------------+-------------------+
+| id  | full_name        | english | marathi | hindi | social_science | science | maths | total_marks | percentage        |
++-----+------------------+---------+---------+-------+----------------+---------+-------+-------------+-------------------+
+| 101 | manish patil     |      45 |      78 |    52 |             65 |      72 |    96 |         408 |                68 |
+| 102 | Rushikesh Mahale |      55 |      68 |    86 |             95 |      74 |    56 |         434 | 72.33333333333334 |
+| 103 | Kalpana Mahale   |      78 |      88 |    56 |             56 |      94 |    78 |         450 |                75 |
+| 104 | Radha Powale     |      45 |      88 |    75 |             56 |      94 |    78 |         436 | 72.66666666666667 |
+| 105 | Leena Powale     |      75 |      78 |    75 |             56 |      94 |    78 |         456 |                76 |
++-----+------------------+---------+---------+-------+----------------+---------+-------+-------------+-------------------+
+5 rows in set (0.001 sec)
+
+
+-----------------------------------------------------------------------view library_record-----------------------------------------------------------------------------------------------
+MariaDB [school_db]> create view library_record as select s.id,concat(s.sfname,'',s.slname) as full_name, s.scontact,s.semail,b.bid,b.bname,b.date_of_issue,b.date_of_return from studentinfo s right join book_issue b on s.id=b.sid;
+Query OK, 0 rows affected (0.053 sec)
+
+MariaDB [school_db]> select * from library_record;
++------+-------------+------------+------------------+------+------------+---------------+----------------+
+| id   | full_name   | scontact   | semail           | bid  | bname      | date_of_issue | date_of_return |
++------+-------------+------------+------------------+------+------------+---------------+----------------+
+|  101 | manishpatil | 2147483647 | manish@yahoo.com | 1023 | story book | 2023-01-21    | 2023-01-28     |
++------+-------------+------------+------------------+------+------------+---------------+----------------+
+1 row in set (0.039 sec)
+
+------------------------------------------------------------------trigger creation------------------------------------------------------------------------------------
+
+MariaDB [school_db]> create trigger engaddone
+    -> before
+    -> insert
+    -> on stud_result
+    -> for each row
+    -> set new.english=new.english+1;
+Query OK, 0 rows affected (0.127 sec)
+
+
+MariaDB [school_db]> create trigger stud_info_trigger1
+    -> after
+    -> insert
+    -> on studentinfo
+    -> for each row
+    -> insert into studentinfo_update values("record updated",now());
+Query OK, 0 rows affected (0.102 sec)
+
+
+
+
+
